@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Discover Your City</string>
+    <string name="action_settings">Настройки</string>
+    <string name="only_open_cards">Показать только открытые карточки</string>
+    <string name="map">Карта</string>
+    <string name="close_cart_description">close card</string>
+</resources>

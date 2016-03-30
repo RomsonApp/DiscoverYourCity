@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Discover Your City</string>
+    <string name="only_open_cards">Вiдобразити тiлькт вiдкритi картки</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="map">Мапа</string>
+</resources>

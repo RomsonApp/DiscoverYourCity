@@ -21,7 +21,7 @@ import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 public class Card extends AppCompatActivity {
-    private final String URL = "http://192.168.0.4:8000";
+    private final String URL = "http://romsonapp.com/android/public/";
     private Gson gson = new GsonBuilder().create();
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(URL)

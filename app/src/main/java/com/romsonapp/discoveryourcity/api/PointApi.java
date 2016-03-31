@@ -14,9 +14,9 @@ import retrofit.http.Path;
 import retrofit.Callback;
 
 public interface PointApi {
-    @GET("/api")
+    @GET("api")
     Call<ArrayList<Point>> getPoints();
 
-    @GET("/api/point/{id}")
+    @GET("api/point/{id}")
     Call<Point> getPoint(@Path("id") int id);
 }

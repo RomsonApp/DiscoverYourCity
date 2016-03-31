@@ -32,7 +32,7 @@ import retrofit.Retrofit;
 public class Main extends AppCompatActivity {
 
     GridView gridView;
-    private final String URL = "http://192.168.0.4:8000";
+    private final String URL = "http://romsonapp.com/android/public/";
     private Gson gson = new GsonBuilder().create();
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(URL)
@@ -49,12 +49,15 @@ public class Main extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Call<ArrayList<Point>> call = api.getPoints();
         try {
+            //String resp = call.execute().message();
             points = call.execute().body();
+            //Log.d("response", "" + call.execute().message());
+            renderCards(points);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        renderCards(points);
+
     }
 
     private void renderCards(ArrayList<Point> points) {

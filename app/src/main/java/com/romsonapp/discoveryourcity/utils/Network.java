@@ -1,37 +1,53 @@
 package com.romsonapp.discoveryourcity.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.StrictMode;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.romsonapp.discoveryourcity.NeedConection;
+import com.romsonapp.discoveryourcity.R;
 
 import java.net.InetAddress;
 
-/**
- * Created by romson on 3/21/16.
- */
 public class Network {
-    private static String _SERVER_NAME = "http://romsonapp.com";
-
-    public static boolean isNetworkConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null;
-    }
-
-    public static boolean isInternetAvailable() {
+    /**
+     * Чтоб не вылетало приложение при отсутствии интернета.
+     * @param activity
+     * @return
+     */
+    public static boolean isInternetAvailable(Activity activity) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        Toast toast;
+        Intent intent = new Intent(activity, NeedConection.class);
         try {
+            String _SERVER_NAME = "romsonapp.com";
             InetAddress ipAddr = InetAddress.getByName(_SERVER_NAME);
 
             if (ipAddr.equals("")) {
+                toast = Toast.makeText(activity, activity.getApplicationContext()
+                        .getResources().getString(R.string.server_dont_work), Toast.LENGTH_SHORT);
+                toast.show();
+                activity.startActivity(intent);
+                activity.finish();
+
                 return false;
-            } else {
-                return true;
             }
         } catch (Exception e) {
+            toast = Toast.makeText(activity, activity.getResources().getString(R.string.internet), Toast.LENGTH_SHORT);
+            toast.show();
+            activity.startActivity(intent);
+            activity.finish();
+
             return false;
         }
-    }
 
+        return true;
+    }
 
 
 }

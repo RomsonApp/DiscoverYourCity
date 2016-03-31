@@ -17,8 +17,6 @@
             android:scaleType="centerCrop"
             android:src="@drawable/ic_close_card_web" />
 
-
-
             <TextView
                 android:id="@+id/card_title"
                 android:layout_width="match_parent"
@@ -32,4 +30,21 @@
 
 
     </RelativeLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.5">
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView">
+        <TextView
+            android:id="@+id/tvBody"
+            android:padding="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        </ScrollView>
+
+    </LinearLayout>
 </LinearLayout>

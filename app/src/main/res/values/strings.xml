@@ -4,4 +4,8 @@
     <string name="only_open_cards">Показать только открытые карточки</string>
     <string name="map">Карта</string>
     <string name="close_cart_description">close card</string>
+    <string name="internet">Требуется подключение к интернету</string>
+    <string name="server_dont_work">Сервер не доступен.</string>
+    <string name="repeat">Повторить</string>
+    <string name="server_client_id">929475799341-6r82756tkvmt8jianm6kombbch78geho.apps.googleusercontent.com</string>
 </resources>

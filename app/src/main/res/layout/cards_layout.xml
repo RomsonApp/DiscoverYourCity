@@ -14,7 +14,7 @@
         android:background="@android:color/darker_gray"
         android:src="@drawable/ic_close_card_web"
         android:onClick="openCard"
-        android:contentDescription="@string/close_cart_description"
+        android:contentDescription="0"
         />
 
 

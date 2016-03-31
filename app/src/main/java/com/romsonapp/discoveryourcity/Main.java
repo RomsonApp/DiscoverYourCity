@@ -2,7 +2,6 @@ package com.romsonapp.discoveryourcity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -10,53 +9,50 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.romsonapp.discoveryourcity.adapter.CardsAdapter;
-import com.romsonapp.discoveryourcity.api.PointApi;
 import com.romsonapp.discoveryourcity.model.Point;
+import com.romsonapp.discoveryourcity.utils.Device;
+import com.romsonapp.discoveryourcity.utils.Network;
+import com.romsonapp.discoveryourcity.utils.PointsHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
 
 public class Main extends AppCompatActivity {
 
     GridView gridView;
-    private final String URL = "http://romsonapp.com/android/public/";
-    private Gson gson = new GsonBuilder().create();
-    private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-
-    private PointApi api = retrofit.create(PointApi.class);
+    PointsHelper pointsHelper;
     ArrayList<Point> points;
+    private GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        setContentView(R.layout.activity_main);
-        Call<ArrayList<Point>> call = api.getPoints();
-        try {
-            //String resp = call.execute().message();
-            points = call.execute().body();
-            //Log.d("response", "" + call.execute().message());
-            renderCards(points);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
+        setContentView(R.layout.activity_main);
+        if (Network.isInternetAvailable(this)) {
+
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(ConnectionResult connectionResult) {
+                            Log.d("play", "Failed");
+                        }
+                    })
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+            pointsHelper = new PointsHelper();
+            points = pointsHelper.getPoints();
+            renderCards(points);
+        }
 
     }
 
@@ -68,7 +64,6 @@ public class Main extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -90,7 +85,11 @@ public class Main extends AppCompatActivity {
 
     public void openCard(View view) {
         Intent intent = new Intent(this, Card.class);
-        intent.putExtra("id", Integer.parseInt((String) view.getContentDescription()));
-        startActivity(intent);
+        int id = Integer.parseInt((String) view.getContentDescription());
+        Log.d("device", Device.getAndroid_id(this));
+        if (id != 0) {
+            intent.putExtra("id", id);
+            startActivity(intent);
+        }
     }
 }

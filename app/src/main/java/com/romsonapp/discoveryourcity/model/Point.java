@@ -5,6 +5,8 @@ public class Point{
     private int id;
     private String title;
     private String image;
+    private String body;
+    private int status = 0;
 
     public Point(int id, String title, String image) {
         this.id = id;
@@ -43,4 +45,15 @@ public class Point{
         this.image = image;
     }
 
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public int getStatus() {
+        return status;
+    }
 }

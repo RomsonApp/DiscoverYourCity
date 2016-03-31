@@ -9,51 +9,46 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.romsonapp.discoveryourcity.adapter.CardsAdapter;
 import com.romsonapp.discoveryourcity.model.Point;
-import com.romsonapp.discoveryourcity.utils.Device;
+import com.romsonapp.discoveryourcity.utils.GoogleSignInHelper;
 import com.romsonapp.discoveryourcity.utils.Network;
 import com.romsonapp.discoveryourcity.utils.PointsHelper;
 
 import java.util.ArrayList;
 
 
-public class Main extends AppCompatActivity {
+public class Main extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     GridView gridView;
     PointsHelper pointsHelper;
     ArrayList<Point> points;
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleSignInHelper googleSignInHelper;
+    private GoogleSignInResult mGoogleSignInResult;
+    private GoogleSignInAccount signInAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
         if (Network.isInternetAvailable(this)) {
-
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .build();
-
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                        @Override
-                        public void onConnectionFailed(ConnectionResult connectionResult) {
-                            Log.d("play", "Failed");
-                        }
-                    })
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                    .build();
-            pointsHelper = new PointsHelper();
-            points = pointsHelper.getPoints();
-            renderCards(points);
+            googleSignInHelper = new GoogleSignInHelper(this);
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleSignInResult = googleSignInHelper.start();
+        signInAccount = mGoogleSignInResult.getSignInAccount();
+        pointsHelper = new PointsHelper();
+        points = pointsHelper.getPoints();
+        renderCards(points);
     }
 
     private void renderCards(ArrayList<Point> points) {
@@ -86,10 +81,15 @@ public class Main extends AppCompatActivity {
     public void openCard(View view) {
         Intent intent = new Intent(this, Card.class);
         int id = Integer.parseInt((String) view.getContentDescription());
-        Log.d("device", Device.getAndroid_id(this));
+        Log.d("device", signInAccount.getId());
         if (id != 0) {
-            intent.putExtra("id", id);
-            startActivity(intent);
+         //   intent.putExtra("id", id);
+          //  startActivity(intent);
         }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

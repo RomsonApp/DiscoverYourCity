@@ -11,6 +11,8 @@ import com.romsonapp.discoveryourcity.api.PointApi;
 import com.romsonapp.discoveryourcity.model.Point;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import retrofit.Call;
@@ -52,6 +54,16 @@ public class PointsHelper {
             if (execute.isSuccess())
                 return execute.body();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Field get(String className, String methodName) {
+        Class c = className.getClass();
+        try {
+            return c.getField(methodName);
+        } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         return null;

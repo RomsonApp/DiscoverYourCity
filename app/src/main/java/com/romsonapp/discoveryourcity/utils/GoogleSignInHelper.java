@@ -34,6 +34,7 @@ public class GoogleSignInHelper implements GoogleApiClient.OnConnectionFailedLis
     private GoogleApiClient setmGoogleApiClient() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestId()
                 .build();
 
         return new GoogleApiClient.Builder(context)
@@ -44,11 +45,14 @@ public class GoogleSignInHelper implements GoogleApiClient.OnConnectionFailedLis
 
     public GoogleSignInResult start() {
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if(opr.isDone()){
+            Log.d("play", "Got cached sign-in");
+            GoogleSignInResult result = opr.get();
+            return result;
+        }
 
-        Log.d("play", "Got cached sign-in");
-        GoogleSignInResult result = opr.get();
-        return result;
 
+        return null;
     }
 
     public Intent login() {

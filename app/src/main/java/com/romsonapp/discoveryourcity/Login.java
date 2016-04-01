@@ -14,6 +14,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.romsonapp.discoveryourcity.R;
 import com.romsonapp.discoveryourcity.utils.GoogleSignInHelper;
 import com.romsonapp.discoveryourcity.utils.PointsHelper;
@@ -36,7 +37,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     }
 
     public void login(View view) {
-
         startActivityForResult(googleSignInHelper.login(), RC_SIGN_IN);
     }
 
@@ -49,12 +49,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     public void onStart() {
         super.onStart();
         GoogleSignInResult result = googleSignInHelper.start();
-        if(result.isSuccess()) {
+        if(result != null && result.isSuccess()) {
             Intent intent = new Intent(this, Main.class);
             startActivity(intent);
             this.finish();
         }
-
     }
 
     @Override
@@ -64,6 +63,22 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            System.out.println(result.getStatus().getStatusMessage());
+            System.out.println(resultCode);
+            System.out.println(requestCode);
+            System.out.println(result.getSignInAccount().getDisplayName());
         }
+    }
+
+    public void signOut(View view) {
+
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+
+                        }
+                    });
+
     }
 }

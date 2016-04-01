@@ -47,7 +47,7 @@ public class Main extends AppCompatActivity implements GoogleApiClient.OnConnect
         mGoogleSignInResult = googleSignInHelper.start();
         signInAccount = mGoogleSignInResult.getSignInAccount();
         pointsHelper = new PointsHelper();
-        points = pointsHelper.getPoints();
+        points = pointsHelper.getPoints(signInAccount.getId());
         renderCards(points);
     }
 
@@ -79,17 +79,33 @@ public class Main extends AppCompatActivity implements GoogleApiClient.OnConnect
     }
 
     public void openCard(View view) {
-        Intent intent = new Intent(this, Card.class);
-        int id = Integer.parseInt((String) view.getContentDescription());
+
+
+        PointsHelper helper = pointsHelper.parseImageDescription((String) view.getContentDescription());
+
+        int id = Integer.parseInt(helper.getId());
+
+        int status = Integer.parseInt(helper.getId());
         Log.d("device", signInAccount.getId());
-        if (id != 0) {
-         //   intent.putExtra("id", id);
-          //  startActivity(intent);
+        if (status == 0) {
+            Intent map = new Intent(this, MapsActivity.class);
+            map.putExtra("point_id", id);
+            startActivity(map);
+        } else {
+            Intent intent = new Intent(this, Card.class);
+            intent.putExtra("id", id);
+            startActivity(intent);
         }
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    public void showMap(View view) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("account_id", signInAccount.getId());
+        startActivity(intent);
     }
 }

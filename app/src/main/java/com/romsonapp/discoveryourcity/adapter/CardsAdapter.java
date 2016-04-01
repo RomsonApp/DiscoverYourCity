@@ -62,13 +62,12 @@ public class CardsAdapter extends BaseAdapter {
             Log.d("log", String.valueOf(points.size()));
             Point point = points.get(position);
             imageView.setImageResource(R.drawable.ic_close_card_web);
-            Log.d("status", "status: " + point.getStatus());
+            imageView.setContentDescription("status:" + String.valueOf(point.getStatus()) + ",id:" + String.valueOf(point.getId()));
             if (point.getStatus() == 1) {
                 Picasso.with(context).load(point.getImage()).into(imageView);
-                imageView.setContentDescription(String.valueOf(point.getId()));
             }
         } else {
-            gridView = (View) convertView;
+            gridView = convertView;
         }
 
         return gridView;

@@ -6,6 +6,8 @@ public class Point{
     private String title;
     private String image;
     private String body;
+    private String latitude;
+    private String longitude;
     private int status = 0;
 
     public Point(int id, String title, String image) {
@@ -55,5 +57,13 @@ public class Point{
 
     public int getStatus() {
         return status;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
     }
 }

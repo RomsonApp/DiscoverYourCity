@@ -85,7 +85,7 @@ public class Main extends AppCompatActivity implements GoogleApiClient.OnConnect
 
         int id = Integer.parseInt(helper.getId());
 
-        int status = Integer.parseInt(helper.getId());
+        int status = Integer.parseInt(helper.getStatus());
         Log.d("device", signInAccount.getId());
         if (status == 0) {
             Intent map = new Intent(this, MapsActivity.class);

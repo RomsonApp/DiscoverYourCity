@@ -32,9 +32,9 @@ public class Card extends AppCompatActivity {
 
         Bundle intent = getIntent().getExtras();
 
-        int id = intent.getInt("id");
+        int point_id = intent.getInt("point_id");
         if(Network.isInternetAvailable(this)){
-            Point point = pointsHelper.getPoint(id);
+            Point point = pointsHelper.getPoint(point_id);
 
             ImageView cardImage = (ImageView) findViewById(R.id.card_image);
             TextView cardTitle = (TextView) findViewById(R.id.card_title);

@@ -4,32 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.romsonapp.discoveryourcity.adapter.CardsAdapter;
 import com.romsonapp.discoveryourcity.model.Point;
-import com.romsonapp.discoveryourcity.utils.GoogleSignInHelper;
 import com.romsonapp.discoveryourcity.utils.Network;
 import com.romsonapp.discoveryourcity.utils.PointsHelper;
+import com.romsonapp.discoveryourcity.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 
 
-public class Main extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class Main extends AppCompatActivity {
 
     GridView gridView;
     PointsHelper pointsHelper;
     ArrayList<Point> points;
-    private GoogleSignInHelper googleSignInHelper;
-    private GoogleSignInResult mGoogleSignInResult;
-    private GoogleSignInAccount signInAccount;
+    String account_id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +32,13 @@ public class Main extends AppCompatActivity implements GoogleApiClient.OnConnect
         setContentView(R.layout.activity_main);
 
         if (Network.isInternetAvailable(this)) {
-            googleSignInHelper = new GoogleSignInHelper(this);
+            SharedPreferencesHelper preferencesHelper = new SharedPreferencesHelper(this);
+            account_id = preferencesHelper.getPreferences().getString("account_id", "");
+            Log.d("account_id", account_id);
+            pointsHelper = new PointsHelper();
+            points = pointsHelper.getPoints(account_id);
+            renderCards(points);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleSignInResult = googleSignInHelper.start();
-        signInAccount = mGoogleSignInResult.getSignInAccount();
-        pointsHelper = new PointsHelper();
-        points = pointsHelper.getPoints(signInAccount.getId());
-        renderCards(points);
     }
 
     private void renderCards(ArrayList<Point> points) {
@@ -83,29 +73,26 @@ public class Main extends AppCompatActivity implements GoogleApiClient.OnConnect
 
         PointsHelper helper = pointsHelper.parseImageDescription((String) view.getContentDescription());
 
-        int id = Integer.parseInt(helper.getId());
+        int point_id = Integer.parseInt(helper.getId());
 
         int status = Integer.parseInt(helper.getStatus());
-        Log.d("device", signInAccount.getId());
+        Log.d("parse", "id: " + point_id);
+        Log.d("parse", "status: " + status);
         if (status == 0) {
             Intent map = new Intent(this, MapsActivity.class);
-            map.putExtra("point_id", id);
+            Log.d("map", "Put PID: " + point_id);
+            map.putExtra("point_id", point_id);
             startActivity(map);
         } else {
             Intent intent = new Intent(this, Card.class);
-            intent.putExtra("id", id);
+            intent.putExtra("point_id", point_id);
             startActivity(intent);
         }
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
     public void showMap(View view) {
         Intent intent = new Intent(this, MapsActivity.class);
-        intent.putExtra("account_id", signInAccount.getId());
+        intent.putExtra("account_id", account_id);
         startActivity(intent);
     }
 }

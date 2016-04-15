@@ -179,15 +179,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Toast toast;
-                Gson gson = new Gson();
-                String objData = gson.toJson(p);
-                pointsHelper.openPoint(account_id, p.getId(), p.getLatitude() + ":" + p.getLongitude());
-              /*  if (!pointsHelper.openPoint(account_id, objData)) {
+
+               if (!pointsHelper.openPoint(account_id, p.getId(), p.getLatitude() + ":" + p.getLongitude())) {
                     toast = Toast.makeText(getApplicationContext(), "Далеко", Toast.LENGTH_SHORT);
                 } else {
                     toast = Toast.makeText(getApplicationContext(), "Норм", Toast.LENGTH_SHORT);
                 }
-                toast.show();*/
+                toast.show();
             }
         });
 

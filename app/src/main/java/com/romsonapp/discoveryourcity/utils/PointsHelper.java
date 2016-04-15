@@ -67,28 +67,26 @@ public class PointsHelper {
         return null;
     }
 
-    public void openPoint(String account_id, int point_id, String location) {
+    public Boolean openPoint(String account_id, int point_id, String location) {
         Call<Object> call = api.openPoint(account_id, point_id, location);
 
         try {
             Response<Object> execute = call.execute();
             if (execute.isSuccess()) {
                 Log.d("app_api", execute.body().toString());
-             //   Gson gson = new Gson();
-             //   String json = gson.toJson(execute.body());
-            //    JSONObject jsonObject = new JSONObject(json);
-                //return false;
-             //   return Boolean.valueOf(jsonObject.get("response").toString());
-            }else{
+                Gson gson = new Gson();
+                String json = gson.toJson(execute.body());
+                JSONObject jsonObject = new JSONObject(json);
+
+                return Boolean.valueOf(jsonObject.get("response").toString());
+            } else {
                 Log.d("app_api", execute.message());
             }
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
-        } /*catch (JSONException e) {
-            e.printStackTrace();
-        }*/
+        }
 
-       // return false;
+        return false;
     }
 
     public String getId() {

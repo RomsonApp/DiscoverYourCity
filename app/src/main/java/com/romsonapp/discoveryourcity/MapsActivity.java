@@ -1,25 +1,23 @@
 package com.romsonapp.discoveryourcity;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,6 +30,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 import com.romsonapp.discoveryourcity.model.Point;
 import com.romsonapp.discoveryourcity.utils.Network;
 import com.romsonapp.discoveryourcity.utils.PermissionUtils;
@@ -39,8 +38,9 @@ import com.romsonapp.discoveryourcity.utils.PointsHelper;
 import com.romsonapp.discoveryourcity.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -55,6 +55,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Point point = null;
     Circle circle;
     ArrayList<Point> points;
+    HashMap<String, Point> markers;
+    Button openLocationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         account_id = preferencesHelper.getPreferences().getString("account_id", "");
         Bundle intent = getIntent().getExtras();
         point_id = intent.getInt("point_id");
-        Log.d("map", "Point ID: " + point_id);
+
         if (point_id > 0) {
             pointsHelper = new PointsHelper();
             point = pointsHelper.getPoint(point_id);
@@ -77,12 +79,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             pointsHelper = new PointsHelper();
             points = pointsHelper.getPoints(account_id);
         }
+
+        openLocationButton = (Button) findViewById(R.id.openLocationButton);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapClickListener(this);
         enableMyLocation();
+
     }
 
     private void enableMyLocation() {
@@ -92,32 +99,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         } else if (mMap != null) {
             mMap.setMyLocationEnabled(true);
-            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+            LocationManager locationManager = (LocationManager)
+                    getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
-            String s = locationManager.getBestProvider(criteria, false);
+            String s = locationManager.getBestProvider(criteria, true);
 
             Location location = locationManager.getLastKnownLocation(s);
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            LatLng latLng = new LatLng(Double.parseDouble("49.0723413"), Double.parseDouble("33.4026085"));
+            if (location == null) {
+                Log.d("location", ":(((((((");
 
-
-            if (point != null) {
-                latLng = new LatLng(Double.parseDouble(point.getLatitude()), Double.parseDouble(point.getLongitude()));
-                circle = addMarker(mMap, latLng, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED), true);
             } else {
-                for (Point point : points) {
-                    BitmapDescriptor icon;
-                    if (point.getStatus() == 0) {
-                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-                    } else {
-                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                markers = new HashMap<String, Point>();
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                Marker marker = null;
+
+                if (point != null) {
+                    latLng = new LatLng(Double.parseDouble(point.getLatitude()), Double.parseDouble(point.getLongitude()));
+                    marker = addMarker(mMap, latLng, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    markers.put(marker.getId(), point);
+                    circle = addCircle(mMap, latLng);
+
+
+                    Log.d("location", String.valueOf(circle.getRadius()));
+
+                } else {
+                    for (Point point : points) {
+                        BitmapDescriptor icon;
+                        if (point.getStatus() == 0) {
+                            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                        } else {
+                            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                        }
+                        LatLng markerPos = new LatLng(Double.parseDouble(point.getLatitude()), Double.parseDouble(point.getLongitude()));
+                        marker = addMarker(mMap, markerPos, icon);
+                        markers.put(marker.getId(), point);
+
                     }
-
-                    LatLng markerPos = new LatLng(Double.parseDouble(point.getLatitude()), Double.parseDouble(point.getLongitude()));
-                    addMarker(mMap, markerPos, icon, false);
-
                 }
-            }
 
+
+            }
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(latLng)
                     .zoom(DEFAULT_ZOOM)
@@ -126,8 +149,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-
         }
     }
 
@@ -140,33 +161,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private Circle addMarker(GoogleMap map, LatLng latLng, BitmapDescriptor icon, Boolean isCircle) {
-        map.addMarker(new MarkerOptions()
+    private Marker addMarker(GoogleMap map, LatLng latLng, BitmapDescriptor icon) {
+        MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
-                .icon(icon));
+                .icon(icon);
+        return map.addMarker(markerOptions);
 
-        if (isCircle)
-            return addCircle(map, latLng);
-        return null;
     }
 
 
     @Override
-    public void onLocationChanged(Location location) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), DEFAULT_ZOOM));
-
-        Log.d("map", "work");
-        if (point != null) {
-            Log.d("map", "point");
-            float[] distance = new float[2];
-            Location.distanceBetween(location.getLatitude(), location.getLongitude(), circle.getCenter().latitude, circle.getCenter().longitude, distance);
-
-            if( distance[0] > circle.getRadius() ){
-                Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle.getRadius() , Toast.LENGTH_LONG).show();
+    public boolean onMarkerClick(Marker marker) {
+        final Point p = markers.get(marker.getId());
+        Log.d("marker", String.valueOf(p.getId()));
+        openLocationButton.setVisibility(View.VISIBLE);
+        openLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast toast;
+                Gson gson = new Gson();
+                String objData = gson.toJson(p);
+                pointsHelper.openPoint(account_id, p.getId(), p.getLatitude() + ":" + p.getLongitude());
+              /*  if (!pointsHelper.openPoint(account_id, objData)) {
+                    toast = Toast.makeText(getApplicationContext(), "Далеко", Toast.LENGTH_SHORT);
+                } else {
+                    toast = Toast.makeText(getApplicationContext(), "Норм", Toast.LENGTH_SHORT);
+                }
+                toast.show();*/
             }
-        }
+        });
 
+        return false;
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        openLocationButton.setVisibility(View.INVISIBLE);
     }
 }

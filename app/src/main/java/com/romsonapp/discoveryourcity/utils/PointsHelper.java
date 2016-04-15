@@ -2,6 +2,7 @@ package com.romsonapp.discoveryourcity.utils;
 
 import android.content.Context;
 import android.os.StrictMode;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -9,6 +10,9 @@ import com.google.gson.GsonBuilder;
 import com.romsonapp.discoveryourcity.R;
 import com.romsonapp.discoveryourcity.api.PointApi;
 import com.romsonapp.discoveryourcity.model.Point;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -25,7 +29,7 @@ import retrofit.Retrofit;
 public class PointsHelper {
     private String id;
     private String status;
-    private final String URL = "http://romsonapp.com/android/public/";
+    private final String URL = "http://185.69.153.193/android/public/";
     private Gson gson = new GsonBuilder().create();
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(URL)
@@ -63,6 +67,30 @@ public class PointsHelper {
         return null;
     }
 
+    public void openPoint(String account_id, int point_id, String location) {
+        Call<Object> call = api.openPoint(account_id, point_id, location);
+
+        try {
+            Response<Object> execute = call.execute();
+            if (execute.isSuccess()) {
+                Log.d("app_api", execute.body().toString());
+             //   Gson gson = new Gson();
+             //   String json = gson.toJson(execute.body());
+            //    JSONObject jsonObject = new JSONObject(json);
+                //return false;
+             //   return Boolean.valueOf(jsonObject.get("response").toString());
+            }else{
+                Log.d("app_api", execute.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } /*catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+
+       // return false;
+    }
+
     public String getId() {
         return id;
     }
@@ -76,7 +104,7 @@ public class PointsHelper {
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(description);
         System.out.println(m.toString());
-        if(m.find()) {
+        if (m.find()) {
             status = m.group(1);
             System.out.println("Status: " + status);
             id = m.group(2);

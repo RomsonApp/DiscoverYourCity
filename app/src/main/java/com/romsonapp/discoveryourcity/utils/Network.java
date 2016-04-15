@@ -1,11 +1,8 @@
 package com.romsonapp.discoveryourcity.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.StrictMode;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.romsonapp.discoveryourcity.NeedConection;
@@ -25,7 +22,7 @@ public class Network {
         Toast toast;
         Intent intent = new Intent(activity, NeedConection.class);
         try {
-            String _SERVER_NAME = "romsonapp.com";
+            String _SERVER_NAME = "185.69.153.193";
             InetAddress ipAddr = InetAddress.getByName(_SERVER_NAME);
 
             if (ipAddr.equals("")) {

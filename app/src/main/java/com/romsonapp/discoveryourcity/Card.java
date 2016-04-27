@@ -35,7 +35,6 @@ public class Card extends AppCompatActivity {
 
             cardTitle.setText(point.getTitle());
             wvBody.loadData(point.getBody(), "text/html", "utf-8");
-
         }
     }
 }

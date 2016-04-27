@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -172,13 +173,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Toast toast;
 
-
                 if (!pointsHelper.openPoint(account_id, p.getId(), location.getLatitude() + ":" + location.getLongitude())) {
                     toast = Toast.makeText(getApplicationContext(), R.string.so_far, Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
                     Intent intent = new Intent(getApplicationContext(), Card.class);
-                    intent.putExtra("point_id", point_id);
+                    intent.putExtra("point_id", p.getId());
                     startActivity(intent);
                     MapsActivity.this.finish();
                 }

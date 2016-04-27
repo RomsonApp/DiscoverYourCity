@@ -15,4 +15,6 @@
     <string name="signed_in_fmt">User:</string>
     <string name="signed_out">Exit</string>
     <string name="loading">Loading</string>
+    <string name="so_far">Слишком далеко, подойдите ближе.</string>
+    <string name="login">Войти</string>
 </resources>

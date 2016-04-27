@@ -1,13 +1,10 @@
 package com.romsonapp.discoveryourcity.utils;
 
-import android.content.Context;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.romsonapp.discoveryourcity.R;
 import com.romsonapp.discoveryourcity.api.PointApi;
 import com.romsonapp.discoveryourcity.model.Point;
 
@@ -15,8 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,11 +68,9 @@ public class PointsHelper {
         try {
             Response<Object> execute = call.execute();
             if (execute.isSuccess()) {
-                Log.d("app_api", execute.body().toString());
                 Gson gson = new Gson();
                 String json = gson.toJson(execute.body());
                 JSONObject jsonObject = new JSONObject(json);
-
                 return Boolean.valueOf(jsonObject.get("response").toString());
             } else {
                 Log.d("app_api", execute.message());
@@ -101,12 +94,9 @@ public class PointsHelper {
         String pattern = "status:(.*),id:(.*)";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(description);
-        System.out.println(m.toString());
         if (m.find()) {
             status = m.group(1);
-            System.out.println("Status: " + status);
             id = m.group(2);
-            System.out.println("Id: " + id);
         }
         return this;
     }

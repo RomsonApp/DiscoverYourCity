@@ -1,8 +1,6 @@
 package com.romsonapp.discoveryourcity.model;
 
 
-import com.google.android.gms.maps.model.Marker;
-
 public class Point{
     private int id;
     private String title;

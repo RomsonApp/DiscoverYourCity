@@ -3,7 +3,6 @@ package com.romsonapp.discoveryourcity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +15,6 @@ import com.romsonapp.discoveryourcity.utils.PointsHelper;
 import com.romsonapp.discoveryourcity.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
-
 
 public class Main extends AppCompatActivity {
 
@@ -34,7 +32,6 @@ public class Main extends AppCompatActivity {
         if (Network.isInternetAvailable(this)) {
             SharedPreferencesHelper preferencesHelper = new SharedPreferencesHelper(this);
             account_id = preferencesHelper.getPreferences().getString("account_id", "");
-            Log.d("account_id", account_id);
             pointsHelper = new PointsHelper();
             points = pointsHelper.getPoints(account_id);
             renderCards(points);
@@ -44,6 +41,13 @@ public class Main extends AppCompatActivity {
     private void renderCards(ArrayList<Point> points) {
         gridView = (GridView) findViewById(R.id.gridView);
         gridView.setAdapter(new CardsAdapter(this, points));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        points = pointsHelper.getPoints(account_id);
+        renderCards(points);
     }
 
 
@@ -69,18 +73,11 @@ public class Main extends AppCompatActivity {
     }
 
     public void openCard(View view) {
-
-
         PointsHelper helper = pointsHelper.parseImageDescription((String) view.getContentDescription());
-
         int point_id = Integer.parseInt(helper.getId());
-
         int status = Integer.parseInt(helper.getStatus());
-        Log.d("parse", "id: " + point_id);
-        Log.d("parse", "status: " + status);
         if (status == 0) {
             Intent map = new Intent(this, MapsActivity.class);
-            Log.d("map", "Put PID: " + point_id);
             map.putExtra("point_id", point_id);
             startActivity(map);
         } else {

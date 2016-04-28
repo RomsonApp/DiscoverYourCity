@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "929475799341",
+    "project_id": "discover-your-city-app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:929475799341:android:287f036d862d10bb",
+        "android_client_info": {
+          "package_name": "com.romsonapp.discoveryourcity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "929475799341-jb3qqjh1e00bb3p1l25n02qn09ousk97.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.romsonapp.discoveryourcity",
+            "certificate_hash": "E1FBA034A35541D990CD49DFD8F22B59679EC39B"
+          }
+        },
+        {
+          "client_id": "929475799341-8qmd3dosnjdm371cd3o7d9nmbmfq3ebc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeaLRFi2MVKR7T9wddRcXhsRq7lJfx9nA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

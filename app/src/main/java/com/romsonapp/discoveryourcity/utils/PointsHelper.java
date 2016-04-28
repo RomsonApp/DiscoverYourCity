@@ -16,33 +16,45 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import retrofit.Call;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 
 public class PointsHelper {
     private String id;
     private String status;
     private final String URL = "http://185.69.153.193/android/public/";
     private Gson gson = new GsonBuilder().create();
-    private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
 
-    private PointApi api = retrofit.create(PointApi.class);
+    private Retrofit retrofit;
+
+    private PointApi api;
 
     public PointsHelper() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+        retrofit = new Retrofit.Builder()
+                .baseUrl(URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+        api = retrofit.create(PointApi.class);
     }
 
     public ArrayList<Point> getPoints(String account_id) {
         Call<ArrayList<Point>> call = api.getPoints(account_id);
         try {
             Response<ArrayList<Point>> execute = call.execute();
-            if (execute.isSuccess())
+            if (execute.isSuccessful())
                 return execute.body();
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,7 +66,7 @@ public class PointsHelper {
         Call<Point> call = api.getPoint(id);
         try {
             Response<Point> execute = call.execute();
-            if (execute.isSuccess())
+            if (execute.isSuccessful())
                 return execute.body();
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +79,7 @@ public class PointsHelper {
 
         try {
             Response<Object> execute = call.execute();
-            if (execute.isSuccess()) {
+            if (execute.isSuccessful()) {
                 Gson gson = new Gson();
                 String json = gson.toJson(execute.body());
                 JSONObject jsonObject = new JSONObject(json);

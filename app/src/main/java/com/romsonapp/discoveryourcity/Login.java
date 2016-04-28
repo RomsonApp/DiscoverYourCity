@@ -40,7 +40,7 @@ public class Login extends AppCompatActivity implements
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.disconnect_button).setOnClickListener(this);
-
+        String serverClientId = getString(R.string.server_client_id);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -84,9 +84,11 @@ public class Login extends AppCompatActivity implements
 
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
+
             SharedPreferencesHelper preferencesHelper = new SharedPreferencesHelper(this);
             preferencesHelper.putString("account_id", acct.getId());
             preferencesHelper.apply();

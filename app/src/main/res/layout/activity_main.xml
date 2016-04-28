@@ -23,14 +23,14 @@
             android:onClick="showMap"
             android:text="@string/map" />
 
-        <TextView
+       <!-- <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/only_open_cards" />
-
-        <CheckBox
+-->
+        <!--<CheckBox
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" />-->
 
     </LinearLayout>
 

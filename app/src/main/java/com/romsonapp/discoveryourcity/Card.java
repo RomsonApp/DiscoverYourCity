@@ -34,7 +34,7 @@ public class Card extends AppCompatActivity {
             Picasso.with(this).load(point.getImage()).into(cardImage);
 
             cardTitle.setText(point.getTitle());
-            wvBody.loadData(point.getBody(), "text/html", "utf-8");
+            wvBody.loadDataWithBaseURL(null, point.getBody(), "text/html", "UTF-8", null);
         }
     }
 }

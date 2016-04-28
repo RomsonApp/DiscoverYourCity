@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 23
@@ -6,11 +7,12 @@ android {
 
     defaultConfig {
         applicationId "com.romsonapp.discoveryourcity"
-        minSdkVersion 16
+        minSdkVersion 10
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.0.4"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -22,14 +24,19 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:+'
-    compile 'com.android.support:design:23.0.0'
+    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:percent:23.2.1'
+    compile 'com.android.support:design:23.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
-    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
-    compile 'com.squareup.retrofit:retrofit-converters:2.0.0-beta2'
-    compile 'com.google.android.gms:play-services:8.4.0'
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
-    compile 'com.google.android.gms:play-services-identity:8.4.0'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
+    compile 'com.squareup.retrofit2:retrofit-converters:2.0.0-beta3'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    compile 'com.google.android.gms:play-services:8.3.0'
+    compile 'com.google.android.gms:play-services-ads:8.3.0'
+    compile 'com.google.android.gms:play-services-identity:8.3.0'
+    compile 'com.google.android.gms:play-services-gcm:8.3.0'
+    compile 'com.google.android.gms:play-services-auth:8.3.0'
 }
